@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title>MiniChat</title>
+</head>
+
+<body class="container">
+    <h1 class="mt-5">MiniChat</h1>
+    <hr />
+
+
+    <form action="" id="miFormulario">
+        <div class="row">
+
+            <div class="col-8">
+                <input type="text" id="txtMessage" placeholder="Mensaje" class="form-control"/>
+            </div>
+
+            <div class="col-4">
+                <button type="submit" class="btn btn-primary">
+                    Enviar
+                </button>
+            </div>
+
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col">
+            <ul id="misMensajes" class="mt-2"></ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"
+        integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        
+        // TYPES FOR CLIENT
+        // please note that the types are reversed
+        // const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
+
+        // socket del lado del cliente
+        const socket = io('http://localhost:8080')
+
+        // referencia a elementos del DOM
+        const miForm = document.querySelector('#miFormulario')
+        const mensajes = document.querySelector('#misMensajes')
+        const txtMensaje = document.querySelector('#txtMessage')
+
+        miForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+
+            const nuevoMensaje = txtMensaje.value
+            socket.emit('mensaje-cliente', {
+                msg: nuevoMensaje
+            })
+        })
+
+        socket.on('mensaje-desde-server', (data) => {
+            console.log(data)
+            mensajes.innerHTML += `<li>${data.msg}</li>`
+        })
+
+    </script>
+</body>
+
+</html>
